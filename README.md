@@ -13,3 +13,7 @@ pip install numpy
 pip install torch torchvision
 pip install flask
 ```
+Build:
+```
+docker build -t mlops-workshop .
+docker run -i -p 1000:1000 -p 5000:5000 --mount type=bind,source="%cd%/mlflow_uri",target=/mlflow_uri -t mlops-workshop```

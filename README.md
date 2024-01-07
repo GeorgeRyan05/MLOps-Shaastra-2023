@@ -5,3 +5,11 @@ Run the following command
 ```
 docker build -t mlops-workshop .
 ```
+If you are not able to install docker, run this instead. 
+```
+pip install pip
+pip install mlflow
+pip install numpy
+pip install torch torchvision
+pip install flask
+```

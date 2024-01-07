@@ -5,7 +5,7 @@ Run the following command
 ```
 docker build -t mlops-workshop .
 ```
-If you are not able to install docker, run this instead. It won't run on python 3.12 
+Whether or not you are not able to install docker, run this also (in a virtual environment if you want). It won't run on python 3.12 
 ```
 pip install pip
 pip install mlflow

@@ -1,14 +1,15 @@
 import mlflow
 from PIL import Image, ImageOps
-from fashion_mnist import class_names, CNN, ANN, train as train_, accuracy
+from fashion_mnist import class_names, CNN, train as train_, accuracy
 from torchvision import transforms, datasets
+from torch.utils.data import DataLoader
 import os
 from flask import Flask, request, render_template
 
 # All print statements in this file appear only in the terminal, for debugging purposes. They will not show up on the web app
 
 app = Flask(__name__) # Required for Flask
-mlflow.set_tracking_uri("./mlflow_uri") # Storage directory for mlflow.
+mlflow.set_tracking_uri("./mlflow_no_docker") # Storage directory for mlflow.
 # This should be passed as a bind mount to docker run. (not required if you're not rebuilding the imaga at any point)
 mlflow.set_experiment('FashionMNIST')
 mlflow.pytorch.autolog(disable=True)
@@ -26,16 +27,17 @@ def train():
     train_set = datasets.FashionMNIST('.', train=True, download=True, transform=transform)
     test_set = datasets.FashionMNIST('.', train=False, download=True, transform=transform) 
     # The data is downloaded only the 1st time
-
+    train_load = DataLoader(train_set, batch_size=256, shuffle=True)
+    test_load = DataLoader(test_set, batch_size=256, shuffle=True)
     # Running the model
     with mlflow.start_run(run_name='FashionMNIST'):
         mlflow.set_tag('model_name', 'CNN')
         mlflow.set_tag('training', True)
 
         model = CNN()
-        train_(model, batch_size=256, train_load=train_set) 
+        train_(model, train_load=train_load) 
         # Train the model using our module fashion_mnist.py
-        acc = accuracy(model, test_set) # Test the model
+        acc = accuracy(model, test_load) # Test the model
 
         mlflow.log_params({'epochs': 1, 'batch_size': 256}) # Log the hyperparameters
         mlflow.log_metric('accuracy', acc) # Log the accuracy
@@ -71,14 +73,14 @@ def mlflow_ui():
 
     To continue using the app, reload the 1st page (http:/127.0.0.1:1000)
     """
-    os.system('mlflow ui --host 0.0.0.0 --backend-store-uri ./mlflow_uri')
+    os.system('mlflow ui --host 0.0.0.0 --backend-store-uri ./mlflow_no_docker')
     # This will not stop running until the app is closed
 
 def classify(image_path):
     "Classify an image given its path or a file object (here we use a file object)."
     print('Running classify')
     img_raw = Image.open(image_path)
-    img = transform(ImageOps.grayscale(img_raw)).unsqueeze(0) 
+    img = transform(ImageOps.grayscale(img_raw)).unsqueeze(0)
     # PyTorch models expect a batch of inputs
     with mlflow.start_run(run_name='FashionMNIST'):
         mlflow.set_tag('model_name', 'CNN')

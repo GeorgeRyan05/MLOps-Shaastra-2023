@@ -10,7 +10,7 @@ ADD app.py .
 ADD fashion_mnist.py .
 RUN mkdir -p FashionMNIST
 ADD FashionMNIST ./FashionMNIST
-ADD Sumedh.png .
+# ADD Sumedh.png .
 ADD templates ./templates
 
 CMD ["python", "./app.py"]

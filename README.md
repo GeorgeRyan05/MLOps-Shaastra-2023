@@ -2,7 +2,7 @@
 1. Install Docker from the https://www.docker.com/get-started/
     - If this doesn't work properly, install WSL 2.
     - If that doesn't work, check https://learn.microsoft.com/en-us/windows/wsl/troubleshooting#installation-issues
-2. As of now, this does not work on python 3.12 (due to pytorch not being updated yet). The docker version should work. Otherwise, you can run in a virual environment.
+2. This code should run with python 3.10, 3.11 and 3.12 (at least). The docker version will run in any case (since it always uses python 3.10)
 # Running with Docker
 Navigate to the directory with docker.  
 You can use any name instead of mlops-workshop. If you want to name your mlflow storage something else, you will need to change the code (`mlflow.set_tracking_uri()`). 
